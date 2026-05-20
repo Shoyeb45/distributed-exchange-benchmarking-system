@@ -1,0 +1,23 @@
+version: '3'
+
+tasks:
+
+  dev:
+    cmds:
+      - cargo run -p sandbox-engine
+
+  build:
+    cmds:
+      - cargo build -p sandbox-engine
+
+  test:
+    cmds:
+      - cargo test -p sandbox-engine
+
+  lint:
+    cmds:
+      - cargo clippy -p sandbox-engine -- -D warnings
+
+  start:
+    cmds:
+      - cargo run --release

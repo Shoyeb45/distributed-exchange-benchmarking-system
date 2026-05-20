@@ -1,0 +1,54 @@
+version: "3"
+
+# This will let taskfile know that we have these projects
+includes:
+  web:
+    taskfile: ./apps/web/Taskfile.yml
+    dir: ./apps/web
+
+  server:
+    taskfile: ./services/server/Taskfile.yml
+    dir: ./services/server
+
+  sandbox-engine:
+    taskfile: ./services/sandbox-engine/Taskfile.yml
+    dir: ./services/sandbox-engine
+
+
+# these are the main commands which is defined in their respective taskfiles
+tasks:
+
+  build:
+    desc: Build all services
+    deps:
+      - web:build
+      - server:build
+      - sandbox-engine:build
+
+    dev:
+      desc: Start services as a development
+      deps:
+        - web:dev
+        - server:dev
+        - sandbox-engine:dev
+      
+    test:
+      desc: Test services
+      deps:
+        - web:test
+        - server:test
+        - sandbox-engine:test
+    
+    lint:
+      desc: Format and lint services
+      deps:
+        - web:lint
+        - server:lint
+        - sandbox-engine:lint
+
+    start:
+      desc: Start services as it would in the production
+      deps:
+        - web:start
+        - server:start
+        - sandbox-engine:start
