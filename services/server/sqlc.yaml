@@ -1,0 +1,17 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries:
+      - sql/queries/*/*.sql
+    schema:
+      - sql/migrations/*.sql
+    strict_order_by: false
+    gen:
+      go:
+        package: "sqlcv1"
+        sql_package: "pgx/v5"
+        out: "pkg/repository/generated"
+        emit_exact_table_names: false
+        emit_methods_with_db_argument: false
+        emit_result_struct_pointers: true
+        emit_json_tags: true
