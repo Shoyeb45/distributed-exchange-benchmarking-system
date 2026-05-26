@@ -4,9 +4,8 @@ import (
 	"time"
 
 	requestLogger "github.com/Shoyeb45/server/api/middleware/request-logger"
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
-	httpSwagger "github.com/swaggo/http-swagger"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func New() *chi.Mux {
@@ -19,9 +18,6 @@ func New() *chi.Mux {
 	r.Use(middleware.Timeout(timeout))
 	r.Use(requestLogger.RequestLogger) // logs request details
 	r.Use(middleware.Recoverer)        // recovers from panic
-
-	// add swagger
-	r.Get("/swagger/*", httpSwagger.WrapHandler)
 
 	return r
 }

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/Shoyeb45/server/pkg/logger"
-	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func RequestLogger(next http.Handler) http.Handler {

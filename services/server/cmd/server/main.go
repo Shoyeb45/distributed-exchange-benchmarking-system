@@ -60,5 +60,4 @@ func main() {
 		logger.Log.Error("failed to start application")
 		panic(err.Error())
 	}
-
 }

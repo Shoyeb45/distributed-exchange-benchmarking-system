@@ -10,7 +10,7 @@ import (
 
 	errormiddleware "github.com/Shoyeb45/server/api/middleware/error-middleware"
 	"github.com/Shoyeb45/server/pkg/apierr"
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"
 )
 
