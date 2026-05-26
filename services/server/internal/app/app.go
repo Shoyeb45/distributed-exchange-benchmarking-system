@@ -3,12 +3,11 @@ package app
 import (
 	"time"
 
+	httpSwagger "github.com/swaggo/http-swagger"
 	requestLogger "github.com/Shoyeb45/fast-docs/api/middleware/request-logger"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
-
-
 
 func New() *chi.Mux {
 	r := chi.NewRouter()
@@ -21,5 +20,8 @@ func New() *chi.Mux {
 	r.Use(requestLogger.RequestLogger) // logs request details
 	r.Use(middleware.Recoverer)        // recovers from panic
 
+	// add swagger
+	r.Get("/swagger/*", httpSwagger.WrapHandler);
+	
 	return r
 }
