@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	validatormiddleware "github.com/Shoyeb45/server/api/middleware/validator"
+	"github.com/Shoyeb45/server/pkg/apiresponse"
 )
 
 type AuthHandler struct {
@@ -16,19 +17,24 @@ func NewAuthHandler(repo AuthRepository) *AuthHandler {
 
 // Login godoc
 // @Summary      Login
-// @Description  Authenticate user and return token
-// @Tags         Auth
+// @Description  Authenticate with email and password
+// @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        body  body      LogIn    true  "Login credentials"
-// @Success      200   {object}  map[string]string
-// @Failure      400   {object}  map[string]string
-// @Failure      401   {object}  map[string]string
-// @Router       /api/auth/ [post]   ← must match exactly what chi mounts
+// @Param        body  body      RequestLogIn            true  "Login credentials"
+// @Success      200   {object}  apiresponse.SwaggerResponse{data=ResponseLogIn}
+// @Failure      400   {object}  errormiddleware.ErrorResponse
+// @Failure      401   {object}  errormiddleware.ErrorResponse
+// @Failure      422   {object}  errormiddleware.ErrorResponse
+// @Router       /api/auth [post]
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) error {
-	login := validatormiddleware.From[LogIn](r)
+	login := validatormiddleware.From[RequestLogIn](r)
 
 	// return writeJSON(w, http.StatusOK, user)
-	w.Write([]byte("Hi " + login.Name));
-	return nil;
+	return apiresponse.ResponseWriter(w, http.StatusCreated, "Logged in", ResponseLogIn{
+		ID: "550e8400-e29b-41d4-a716-446655440000",
+		Name: login.Email,
+		Email: login.Email,
+		AccessToken: "eyerfdfdj9dufjdfjd9fjpdfd",
+	})
 }

@@ -66,6 +66,15 @@ func NewNotFound(resource string) *APIError {
 	}
 }
 
+// NewMethodNotAllowed — 405, use when a requested api method is not allowed.
+func NewMethodNotAllowed(resource string) *APIError {
+	return &APIError{
+		StatusCode: http.StatusMethodNotAllowed,
+		Code:       CodeNotFound,
+		Message:    resource,
+	}
+}
+
 // NewConflict — 409, use for duplicate resource.
 func NewConflict(message string) *APIError {
 	if message == "" {
