@@ -44,7 +44,7 @@ func Init() error {
 		})
 	}
 	Log = slog.New(handler).With(
-		"service", "fast-docs",
+		"service", "server",
 		"env", stage,
 	)
 	slog.SetDefault(Log)
