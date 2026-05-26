@@ -25,30 +25,30 @@ tasks:
       - server:build
       - sandbox-engine:build
 
-    dev:
-      desc: Start services as a development
-      deps:
-        - web:dev
-        - server:dev
-        - sandbox-engine:dev
+  dev:
+    desc: Start services as a development
+    deps:
+      - web:dev
+      - server:dev
+      - sandbox-engine:dev
       
-    test:
-      desc: Test services
-      deps:
-        - web:test
-        - server:test
-        - sandbox-engine:test
+  test:
+    desc: Test services
+    deps:
+      - web:test
+      - server:test
+      - sandbox-engine:test
     
-    lint:
-      desc: Format and lint services
-      deps:
-        - web:lint
-        - server:lint
-        - sandbox-engine:lint
+  lint:
+    desc: Format and lint services
+    deps:
+      - web:lint
+      - server:lint
+      - sandbox-engine:lint
 
-    start:
-      desc: Start services as it would in the production
-      deps:
-        - web:start
-        - server:start
-        - sandbox-engine:start
+  start:
+    desc: Start services as it would in the production
+    deps:
+      - web:start
+      - server:start
+      - sandbox-engine:start

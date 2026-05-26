@@ -1,15 +1,48 @@
 package main
 
 import (
-    "fmt"
-    "net/http"
+	"net/http"
+	"time"
+
+	"github.com/Shoyeb45/fast-docs/internal/app"
+	"github.com/Shoyeb45/fast-docs/pkg/config"
+	"github.com/Shoyeb45/fast-docs/pkg/database"
+	"github.com/Shoyeb45/fast-docs/pkg/logger"
 )
 
 func main() {
-    http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-        fmt.Fprintf(w, "gateway alive")
-    })
+	// read environment variables
+	if err := config.LoadEnvironmentVariables(); err != nil {
+		panic(err.Error())
+	}
 
-    fmt.Println("gateway running on :8080")
-    http.ListenAndServe(":8080", nil)
+	// initialize logger
+	if err := logger.Init(); err != nil {
+		panic(err.Error())
+	}
+
+	logger.Log.Info("Logger initialized successfully.")
+
+	if err := database.Connect(); err != nil {
+		panic(err.Error())
+	}
+	defer database.Close()
+
+	chiMux := app.New()
+
+	const readAndWriteTimeout = 10 * time.Second
+	const idleTimeout = 60 * time.Second
+
+	srv := &http.Server{
+		Addr:         ":" + config.Cfg.Port,
+		Handler:      chiMux,
+		ReadTimeout:  readAndWriteTimeout,
+		WriteTimeout: readAndWriteTimeout,
+		IdleTimeout:  idleTimeout,
+	}
+
+	if err := srv.ListenAndServe(); err != nil {
+		logger.Log.Error("failed to start application")
+		panic(err.Error())
+	}
 }
