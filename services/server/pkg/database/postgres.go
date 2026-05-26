@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/Shoyeb45/fast-docs/pkg/config"
-	"github.com/Shoyeb45/fast-docs/pkg/logger"
+	"github.com/Shoyeb45/server/pkg/config"
+	"github.com/Shoyeb45/server/pkg/logger"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 

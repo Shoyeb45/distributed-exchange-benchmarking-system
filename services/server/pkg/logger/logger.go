@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/Shoyeb45/fast-docs/pkg/config"
+	"github.com/Shoyeb45/server/pkg/config"
 )
 
 // Log is Logger and it should be used througout in the application.

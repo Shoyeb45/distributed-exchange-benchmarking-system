@@ -21,3 +21,8 @@ tasks:
   start:
     cmds:
       - go build -o bin/server ./cmd/server && ./bin/server
+
+  swagger:
+      desc: Generate swagger docs
+      cmds:
+        - swag init -g cmd/server/main.go -o docs/

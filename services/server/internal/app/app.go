@@ -3,12 +3,10 @@ package app
 import (
 	"time"
 
-	requestLogger "github.com/Shoyeb45/fast-docs/api/middleware/request-logger"
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
+	requestLogger "github.com/Shoyeb45/server/api/middleware/request-logger"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
-
-
 
 func New() *chi.Mux {
 	r := chi.NewRouter()
