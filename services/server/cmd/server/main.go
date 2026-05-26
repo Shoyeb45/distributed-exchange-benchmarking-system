@@ -4,18 +4,19 @@ import (
 	"net/http"
 	"time"
 
-	_ "github.com/Shoyeb45/fast-docs/docs"
-	"github.com/Shoyeb45/fast-docs/internal/app"
-	"github.com/Shoyeb45/fast-docs/pkg/config"
-	"github.com/Shoyeb45/fast-docs/pkg/database"
-	"github.com/Shoyeb45/fast-docs/pkg/logger"
+	"github.com/Shoyeb45/server/api/modules"
+	_ "github.com/Shoyeb45/server/docs"
+	"github.com/Shoyeb45/server/internal/app"
+	"github.com/Shoyeb45/server/pkg/config"
+	"github.com/Shoyeb45/server/pkg/database"
+	"github.com/Shoyeb45/server/pkg/logger"
 )
 
 // @title           Server
 // @version        	2.0
 // @description     API documentation
-// @host            localhost:8080
-// @BasePath        /api/
+// @host            localhost:8000
+// @BasePath        /
 
 // @securityDefinitions.apikey BearerAuth
 // @in header
@@ -52,8 +53,12 @@ func main() {
 		IdleTimeout:  idleTimeout,
 	}
 
+	// mount all the routes
+	modules.MountRoutes(chiMux);
+
 	if err := srv.ListenAndServe(); err != nil {
 		logger.Log.Error("failed to start application")
 		panic(err.Error())
 	}
+
 }

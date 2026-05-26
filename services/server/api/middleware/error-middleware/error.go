@@ -5,8 +5,10 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/Shoyeb45/fast-docs/pkg/apierr"
-	"github.com/Shoyeb45/fast-docs/pkg/logger"
+	"github.com/Shoyeb45/server/pkg/apierr"
+	"github.com/Shoyeb45/server/pkg/logger"
+	"github.com/Shoyeb45/server/pkg/shared"
+	
 )
 
 type errorResponse struct {
@@ -15,9 +17,8 @@ type errorResponse struct {
 	Details []apierr.FieldError `json:"details,omitempty"`
 }
 
-type HandlerFunc func(w http.ResponseWriter, r *http.Request) error
 
-func ErrorHandler(h HandlerFunc) http.HandlerFunc {
+func ErrorHandler(h shared.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := h(w, r)
 		if err == nil {
@@ -79,20 +80,20 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 }
 
 func HandleError(w http.ResponseWriter, r *http.Request, err error) {
-    var apiErr *apierr.APIError
-    switch {
-    case apierr.As(err, &apiErr):
-        logAPIError(r, apiErr)
-        writeJSON(w, apiErr.StatusCode, errorResponse{
-            Code:    apiErr.Code,
-            Message: apiErr.Message,
-            Details: apiErr.Details,
-        })
-    default:
-        logger.Log.Error("unhandled error")
-        writeJSON(w, http.StatusInternalServerError, errorResponse{
-            Code:    apierr.CodeInternal,
-            Message: "an unexpected error occurred",
-        })
-    }
+	var apiErr *apierr.APIError
+	switch {
+	case apierr.As(err, &apiErr):
+		logAPIError(r, apiErr)
+		writeJSON(w, apiErr.StatusCode, errorResponse{
+			Code:    apiErr.Code,
+			Message: apiErr.Message,
+			Details: apiErr.Details,
+		})
+	default:
+		logger.Log.Error("unhandled error")
+		writeJSON(w, http.StatusInternalServerError, errorResponse{
+			Code:    apierr.CodeInternal,
+			Message: "an unexpected error occurred",
+		})
+	}
 }

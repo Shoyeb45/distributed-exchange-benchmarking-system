@@ -1,11 +1,53 @@
-basePath: /api/
-host: localhost:8080
+basePath: /
+definitions:
+  auth.LogIn:
+    properties:
+      name:
+        type: string
+    type: object
+host: localhost:8000
 info:
   contact: {}
   description: API documentation
   title: Server
   version: "2.0"
-paths: {}
+paths:
+  /api/auth/:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LogIn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login
+      tags:
+      - Auth
 securityDefinitions:
   BearerAuth:
     in: header
