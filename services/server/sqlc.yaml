@@ -10,7 +10,7 @@ sql:
       go:
         package: "sqlcv1"
         sql_package: "pgx/v5"
-        out: "pkg/repository/generated"
+        out: "pkg/repository/gen-queries"
         emit_exact_table_names: false
         emit_methods_with_db_argument: false
         emit_result_struct_pointers: true

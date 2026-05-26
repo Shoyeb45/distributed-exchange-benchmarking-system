@@ -16,18 +16,18 @@
 
 * [X] Init Go module + project structure
 * [X] Taskfile targets (`dev`, `build`, `test`, `lint`, `swagger`)
-* [] Config loading (`env` + `godotenv`)
-* [] Structured logging setup (`slog`)
-* [] Database migrations (`goose`) + first schema
-* [] `sqlc` setup + codegen verified
-* [] `pgx` connection pool wired up
-* [] Chi server initialized
+* [X] Config loading (`env` + `godotenv`)
+* [X] Structured logging setup (`slog`)
+* [X] Database migrations (`goose`) + first schema
+* [X] `sqlc` setup + codegen verified
+* [X] `pgx` connection pool wired up
+* [X] Chi server initialized
 * [] Request ID middleware
-* [] Logging middleware
+* [X] Logging middleware
 * [] Recovery middleware
-* [] Centralized error handling strategy
-* [] Error response helpers
-* [ ] Custom error types + mapping
+* [X] Centralized error handling strategy
+* [X] Error response helpers
+* [] Custom error types + mapping
 * [ ] Validation layer (`go-playground/validator`)
 * [ ] Swagger/OpenAPI setup
 * [ ] Health check endpoint
@@ -35,7 +35,6 @@
 * [ ] Unit test setup
 * [ ] Integration test setup
 * [] Linting (`golangci-lint`)
-* [ ] Formatting checks (`gofumpt` / `goimports`)
 * [] GitHub Actions workflow for lint
 * [ ] GitHub Actions workflow for tests
 * [ ] Dockerfile

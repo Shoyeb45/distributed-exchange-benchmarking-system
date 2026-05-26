@@ -36,7 +36,7 @@ func ErrorHandler(h HandlerFunc) http.HandlerFunc {
 			})
 		default:
 			logger.Log.Error("unhandled error",
-				slog.String("methid", r.Method),
+				slog.String("method", r.Method),
 				slog.String("path", r.URL.Path),
 				slog.String("remote_addr", r.RemoteAddr),
 				slog.Any("error", err),
@@ -76,4 +76,23 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	_ = json.NewEncoder(w).Encode(v)
+}
+
+func HandleError(w http.ResponseWriter, r *http.Request, err error) {
+    var apiErr *apierr.APIError
+    switch {
+    case apierr.As(err, &apiErr):
+        logAPIError(r, apiErr)
+        writeJSON(w, apiErr.StatusCode, errorResponse{
+            Code:    apiErr.Code,
+            Message: apiErr.Message,
+            Details: apiErr.Details,
+        })
+    default:
+        logger.Log.Error("unhandled error")
+        writeJSON(w, http.StatusInternalServerError, errorResponse{
+            Code:    apierr.CodeInternal,
+            Message: "an unexpected error occurred",
+        })
+    }
 }
