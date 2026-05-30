@@ -10,7 +10,7 @@ import (
 )
 
 // ErrorResponse is the shape of all error responses
-// @Description Standard error response
+// @Description Standard error response.
 type ErrorResponse struct {
 	Success bool                `json:"success"`
 	Code    apierr.ErrorCode    `json:"code"`
@@ -19,7 +19,7 @@ type ErrorResponse struct {
 }
 
 // Middleware to pass the handler function and the error will be
-// handled by this middleware
+// handled by this middleware.
 func ErrorHandler(h shared.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := h(w, r)

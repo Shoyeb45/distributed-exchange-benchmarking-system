@@ -12,7 +12,7 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-// Mount all the application routes
+// Mount all the application routes.
 func MountRoutes(r chi.Router) {
 	query := sqlcv1.New(database.DB)
 

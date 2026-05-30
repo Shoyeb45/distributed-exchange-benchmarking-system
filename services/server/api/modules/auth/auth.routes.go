@@ -1,19 +1,28 @@
 package auth
 
 import (
+	authmiddleware "github.com/Shoyeb45/server/api/middleware/auth"
 	errormiddleware "github.com/Shoyeb45/server/api/middleware/error-middleware"
 	validatormiddleware "github.com/Shoyeb45/server/api/middleware/validator"
-	chi "github.com/go-chi/chi/v5"
 	sqlcv1 "github.com/Shoyeb45/server/pkg/repository/gen-queries"
+	chi "github.com/go-chi/chi/v5"
 )
 
 func Mount(query *sqlcv1.Queries, r chi.Router) {
 	authRepo := NewAuthRepository(query)
-	authHandler := NewAuthHandler(*authRepo)
+	authHandler := NewAuthHandler(authRepo)
 
 	r.Route("/auth", func(r chi.Router) {
-		r.With(
-			validatormiddleware.Bind(validatormiddleware.FromBody[RequestLogIn]()),
-		).Post("/", errormiddleware.ErrorHandler(authHandler.Login))
+		r.With(validatormiddleware.Bind(validatormiddleware.FromBody[RefreshTokenBody]())).
+			Post("/refresh", errormiddleware.ErrorHandler(authHandler.RefreshTokens))
+
+		r.With(authmiddleware.RequireAuth).
+			Get("/me", errormiddleware.ErrorHandler(authHandler.Me))
+
+		r.Route("/github", func(r chi.Router) {
+			r.Get("/", errormiddleware.ErrorHandler(authHandler.RedirectGithub))
+			r.With(validatormiddleware.Bind(validatormiddleware.FromQuery[GithubCallbackQuery]())).
+				Get("/callback", errormiddleware.ErrorHandler(authHandler.GithubCallback))
+		})
 	})
 }

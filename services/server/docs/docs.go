@@ -15,9 +15,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/auth": {
-            "post": {
-                "description": "Authenticate with email and password",
+        "/auth/github": {
+            "get": {
+                "description": "Redirect to github oauth page",
                 "consumes": [
                     "application/json"
                 ],
@@ -25,56 +25,41 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
-                "summary": "Login",
-                "parameters": [
-                    {
-                        "description": "Login credentials",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
+                "summary": "RedirectGithub",
+                "responses": {
+                    "307": {
+                        "description": "Temporary Redirect"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/auth.RequestLogIn"
+                            "$ref": "#/definitions/errormiddleware.ErrorResponse"
                         }
                     }
+                }
+            }
+        },
+        "/auth/github/callback": {
+            "get": {
+                "description": "Verify github code",
+                "consumes": [
+                    "application/json"
                 ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Verify github code",
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/apiresponse.SwaggerResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/auth.ResponseLogIn"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
+                        "description": "OK"
                     },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/errormiddleware.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/errormiddleware.ErrorResponse"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/errormiddleware.ErrorResponse"
-                        }
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -117,62 +102,8 @@ const docTemplate = `{
                 }
             }
         },
-        "apiresponse.SwaggerResponse": {
-            "description": "Standard success response",
-            "type": "object",
-            "properties": {
-                "data": {},
-                "message": {
-                    "type": "string",
-                    "example": "operation successful"
-                },
-                "success": {
-                    "type": "boolean",
-                    "example": true
-                }
-            }
-        },
-        "auth.RequestLogIn": {
-            "type": "object",
-            "required": [
-                "email",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string",
-                    "example": "john@example.com"
-                },
-                "password": {
-                    "type": "string",
-                    "minLength": 8,
-                    "example": "secret123"
-                }
-            }
-        },
-        "auth.ResponseLogIn": {
-            "type": "object",
-            "properties": {
-                "accessToken": {
-                    "type": "string",
-                    "example": "eyJhbGci..."
-                },
-                "email": {
-                    "type": "string",
-                    "example": "john@example.com"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440000"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "John Doe"
-                }
-            }
-        },
         "errormiddleware.ErrorResponse": {
-            "description": "Standard error response",
+            "description": "Standard error response.",
             "type": "object",
             "properties": {
                 "code": {
