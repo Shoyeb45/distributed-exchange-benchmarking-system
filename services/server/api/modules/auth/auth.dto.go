@@ -1,7 +1,26 @@
 package auth
 
 type GithubCallbackQuery struct {
-    Code string `query:"code" validate:"required"`
+	Code string `query:"code" validate:"required"`
+}
+
+type RefreshTokenBody struct {
+	RefreshToken string `json:"refreshToken" validate:"required"`
+}
+
+type TokenResponse struct {
+	Success      bool   `json:"success"`
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
+}
+
+type MeResponse struct {
+	Success        bool   `json:"success"`
+	ID             int32  `json:"id"`
+	Name           string `json:"name"`
+	Email          string `json:"email"`
+	AvatarUrl      string `json:"avatarUrl"`
+	GithubUsername string `json:"githubUsername"`
 }
 
 type GithubCallback struct {

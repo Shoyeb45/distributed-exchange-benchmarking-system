@@ -3,6 +3,7 @@ package errormiddleware
 import (
 	"log/slog"
 	"net/http"
+
 	"github.com/Shoyeb45/server/pkg/apierr"
 	"github.com/Shoyeb45/server/pkg/logger"
 	"github.com/Shoyeb45/server/pkg/shared"
