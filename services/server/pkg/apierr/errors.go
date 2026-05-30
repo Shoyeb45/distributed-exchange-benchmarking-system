@@ -62,7 +62,7 @@ func NewNotFound(resource string) *APIError {
 	return &APIError{
 		StatusCode: http.StatusNotFound,
 		Code:       CodeNotFound,
-		Message:    fmt.Sprintf("%s not found", resource),
+		Message:    resource,
 	}
 }
 

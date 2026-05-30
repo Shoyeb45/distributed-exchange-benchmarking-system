@@ -2,6 +2,7 @@ package apiresponse
 
 import (
 	"net/http"
+
 	"github.com/Shoyeb45/server/pkg/shared"
 )
 
@@ -20,7 +21,7 @@ func ResponseWriter[T any](w http.ResponseWriter, status int, message string, da
 }
 
 // SwaggerResponse is the envelope shape for all success responses.
-// @Description Standard success response
+// @Description Standard success response.
 type SwaggerResponse struct {
 	Success bool   `json:"success" example:"true"`
 	Message string `json:"message" example:"operation successful"`

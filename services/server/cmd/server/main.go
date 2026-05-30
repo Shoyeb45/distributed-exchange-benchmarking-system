@@ -54,7 +54,7 @@ func main() {
 	}
 
 	// mount all the routes
-	modules.MountRoutes(chiMux);
+	modules.MountRoutes(chiMux)
 
 	if err := srv.ListenAndServe(); err != nil {
 		logger.Log.Error("failed to start application")

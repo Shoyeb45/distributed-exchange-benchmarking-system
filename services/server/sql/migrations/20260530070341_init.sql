@@ -31,36 +31,25 @@ CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_github_username ON users(github_username);
 
 
--- KEYSTORES
-CREATE TABLE keystores (
+-- refresh_tokens
+CREATE TABLE refresh_tokens (
     id SERIAL PRIMARY KEY,
-    client_id INT NOT NULL,
-    primary_key TEXT NOT NULL,
-    secondary_key TEXT NOT NULL,
-    status BOOLEAN DEFAULT TRUE,
-
-    refresh_token TEXT DEFAULT '',
-    device_fingerprint TEXT DEFAULT '',
-
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token_hash TEXT NOT NULL UNIQUE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW(),
-
-    CONSTRAINT fk_keystores_user
-        FOREIGN KEY (client_id)
-        REFERENCES users(id)
-        ON DELETE CASCADE
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TRIGGER set_updated_at_keystores
-BEFORE UPDATE ON keystores
+CREATE TRIGGER set_updated_at_refresh_tokens
+BEFORE UPDATE ON refresh_tokens
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
 
-CREATE INDEX idx_keystores_client_id ON keystores(client_id);
-CREATE INDEX idx_keystores_client_primary_status ON keystores(client_id, primary_key, status);
-CREATE INDEX idx_keystores_client_primary_secondary ON keystores(client_id, primary_key, secondary_key);
+-- CREATE INDEX idx_refresh_tokens_client_id ON refresh_tokens(client_id);
+-- CREATE INDEX idx_refresh_tokens_client_primary_status ON refresh_tokens(client_id, primary_key, status);
+-- CREATE INDEX idx_refresh_tokens_client_primary_secondary ON refresh_tokens(client_id, primary_key, secondary_key);
 
 -- +goose Down
 
-DROP TABLE IF EXISTS keystores;
+DROP TABLE IF EXISTS refresh_tokens;
 DROP TABLE IF EXISTS users;

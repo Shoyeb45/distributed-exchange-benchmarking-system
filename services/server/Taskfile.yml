@@ -26,3 +26,18 @@ tasks:
       desc: Generate swagger docs
       cmds:
         - swag init -g cmd/server/main.go -o docs/
+
+  migrate:
+      desc: Create migration file, ex, task create-migration NAME=add_access_token
+      cmds:
+        - goose -dir ./sql/migrations create {{.NAME}} sql
+      
+  migrate-db:
+      desc: make changes in the database with latest migration
+      cmds:
+        - goose -dir ./sql/migrations postgres "{{.DB_URL}}" up
+
+  generate:
+      desc: Generate sql query in go application
+      cmds:
+        - sqlc generate

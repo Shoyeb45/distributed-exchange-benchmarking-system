@@ -3,6 +3,7 @@ package validatormiddleware
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -42,19 +43,19 @@ func storeFromCtx(ctx context.Context) validateStore {
 func From[T any](r *http.Request) T {
 	store := storeFromCtx(r.Context())
 
-	if v, ok := store[reflect.TypeOf((*T)(nil)).Elem()]; ok {
+	if v, ok := store[reflect.TypeFor[T]()]; ok {
 		return v.(T)
 	}
 	var zero T
 	return zero
 }
 
-// binding is a single extract+validate unit for one type+source pair
+// binding is a single extract+validate unit for one type+source pair.
 type binding struct {
 	extract func(r *http.Request, store validateStore) error
 }
 
-// FromBody returns a binding descriptor for JSON body → T
+// FromBody returns a binding descriptor for JSON body → T.
 func FromBody[T any]() binding {
 	return binding{
 		extract: func(r *http.Request, store validateStore) error {
@@ -71,7 +72,7 @@ func FromBody[T any]() binding {
 	}
 }
 
-// FromQuery returns a binding descriptor for query params → T
+// FromQuery returns a binding descriptor for query params → T.
 func FromQuery[T any]() binding {
 	return binding{
 		extract: func(r *http.Request, store validateStore) error {
@@ -88,7 +89,7 @@ func FromQuery[T any]() binding {
 	}
 }
 
-// FromParams returns a binding descriptor for chi URL params → T
+// FromParams returns a binding descriptor for chi URL params → T.
 func FromParams[T any]() binding {
 	return binding{
 		extract: func(r *http.Request, store validateStore) error {
@@ -112,7 +113,7 @@ func FromParams[T any]() binding {
 	}
 }
 
-// FromHeaders returns a binding descriptor for request headers → T
+// FromHeaders returns a binding descriptor for request headers → T.
 func FromHeaders[T any]() binding {
 	return binding{
 		extract: func(r *http.Request, store validateStore) error {
@@ -212,7 +213,11 @@ func setField(fv reflect.Value, field reflect.StructField, values []string) erro
 
 func toFieldErrors(err error) []apierr.FieldError {
 	var out []apierr.FieldError
-	for _, e := range err.(validator.ValidationErrors) {
+	for _, e := range func() validator.ValidationErrors {
+		var target validator.ValidationErrors
+		_ = errors.As(err, &target)
+		return target
+	}() {
 		out = append(out, apierr.FieldError{
 			Field:   e.Field(),
 			Message: humanMessage(e),

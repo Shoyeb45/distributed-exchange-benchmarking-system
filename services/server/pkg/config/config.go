@@ -19,12 +19,11 @@ type Config struct {
 	// Frontend application url
 	OriginURL               string
 	GithubRedirectURL       string
-	JwtPrivateKey           string
-	JwtPublicKey            string
+	JwtSecret               string
 	TokenIssuer             string
 	TokenAudience           string
-	AccessTokenValiditySec  string
-	RefreshTokenValiditySec string
+	AccessTokenValiditySec  int
+	RefreshTokenValiditySec int
 	// Directory where logging should happen
 	LogDirectory   string
 	TimeoutSeconds string
@@ -37,19 +36,27 @@ func LoadEnvironmentVariables() error {
 		return err
 	}
 
+	accessTokenValidity, err := strconv.Atoi(getEnv("ACCESS_TOKEN_VALIDITY_SEC", "3600"))
+	if err != nil {
+		return err
+	}
+	refreshTokenValidity, err := strconv.Atoi(getEnv("REFRESH_TOKEN_VALIDITY_SEC", "864000"))
+	if err != nil {
+		return err
+	}
+
 	Cfg = &Config{
 		DatabaseURL:             getEnv("DATABASE_URL", ""),
 		Port:                    getEnv("PORT", "8080"),
 		GithubClientID:          getEnv("GITHUB_CLIENT_ID", ""),
 		GithubClientSecret:      getEnv("GITHUB_CLIENT_SECRET", ""),
 		OriginURL:               getEnv("ORIGIN_URL", "http://localhost:3000"),
-		GithubRedirectURL:       getEnv("GIHUB_REDIRECT_URL", "https://github.com/login/oauth/authorize"),
-		JwtPrivateKey:           getEnv("JWT_PRIVATE_KEY", ""),
-		JwtPublicKey:            getEnv("JWT_PUBLIC_KEY", ""),
+		GithubRedirectURL:       getEnv("GITHUB_REDIRECT_URL", "https://github.com/login/oauth/authorize"),
+		JwtSecret:               getEnv("JWT_SECRET", ""),
 		TokenIssuer:             getEnv("TOKEN_ISSUER", ""),
 		TokenAudience:           getEnv("TOKEN_AUDIENCE", ""),
-		AccessTokenValiditySec:  getEnv("ACCESS_TOKEN_VALIDITY_SEC", "3600"),
-		RefreshTokenValiditySec: getEnv("REFRESH_TOKEN_VALIDITY_SEC", "864000"),
+		AccessTokenValiditySec:  accessTokenValidity,
+		RefreshTokenValiditySec: refreshTokenValidity,
 		Stage:                   getEnv("STAGE", "dev"),
 		LogDirectory:            getEnv("LOG_DIRECTORY", "logs"),
 		TimeoutSeconds:          getEnv("TIMEOUT_SECONDS", "12"),
@@ -86,12 +93,12 @@ func validateEnvironmentVariables() error {
 		return errors.New("github Redirect URL must be provided")
 	}
 
-	if Cfg.JwtPrivateKey == "" || Cfg.JwtPublicKey == "" {
-		return errors.New("JWT Keys must be provided for secure authentication")
-	}
-
 	if Cfg.Stage == "" || (Cfg.Stage != "dev" && Cfg.Stage != "prod") {
 		return errors.New("STAGE must be either dev or prod")
+	}
+
+	if Cfg.JwtSecret == "" {
+		return errors.New("JWT_SECRET must be provided")
 	}
 
 	_, er := strconv.Atoi(Cfg.TimeoutSeconds)
@@ -109,7 +116,7 @@ func validateDatabaseURL() error {
 		return errors.New("database url cannot be empty")
 	}
 
-	if !strings.HasPrefix(dbURL, "postgresql://") && !strings.HasPrefix(dbURL, "potgres://") {
+	if !strings.HasPrefix(dbURL, "postgresql://") && !strings.HasPrefix(dbURL, "postgres://") {
 		return errors.New("you must provide postgres database url which starts with postgresql:// or postgres://")
 	}
 	return nil

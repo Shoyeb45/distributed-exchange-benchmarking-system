@@ -9,6 +9,54 @@ import (
 	"context"
 )
 
+const createUser = `-- name: CreateUser :one
+INSERT INTO users (
+    name,
+    email,
+    avatar_url,
+    github_id,
+    github_username
+)
+VALUES (
+    $1,
+    $2,
+    $3,
+    $4,
+    $5
+)
+RETURNING id, name, email, avatar_url, github_id, github_username, created_at, updated_at
+`
+
+type CreateUserParams struct {
+	Name           string `json:"name"`
+	Email          string `json:"email"`
+	AvatarUrl      string `json:"avatar_url"`
+	GithubID       int32  `json:"github_id"`
+	GithubUsername string `json:"github_username"`
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (*User, error) {
+	row := q.db.QueryRow(ctx, createUser,
+		arg.Name,
+		arg.Email,
+		arg.AvatarUrl,
+		arg.GithubID,
+		arg.GithubUsername,
+	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.AvatarUrl,
+		&i.GithubID,
+		&i.GithubUsername,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return &i, err
+}
+
 const getUser = `-- name: GetUser :one
 SELECT id, name, email, avatar_url, github_id, github_username, created_at, updated_at FROM users
 WHERE id = $1 LIMIT 1
@@ -37,6 +85,27 @@ WHERE email = $1 LIMIT 1
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (*User, error) {
 	row := q.db.QueryRow(ctx, getUserByEmail, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.AvatarUrl,
+		&i.GithubID,
+		&i.GithubUsername,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return &i, err
+}
+
+const getUserByGithubId = `-- name: GetUserByGithubId :one
+SELECT id, name, email, avatar_url, github_id, github_username, created_at, updated_at FROM users
+WHERE github_id = $1 LIMIT 1
+`
+
+func (q *Queries) GetUserByGithubId(ctx context.Context, githubID int32) (*User, error) {
+	row := q.db.QueryRow(ctx, getUserByGithubId, githubID)
 	var i User
 	err := row.Scan(
 		&i.ID,
