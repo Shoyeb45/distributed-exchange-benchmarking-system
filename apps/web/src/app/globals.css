@@ -1,26 +1,133 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Base surfaces — adjust for light/dark feel */
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+
+  /* Brand palette — change hex values to retheme */
+  --primary: #2563eb;
+  --primary-foreground: #f8fafc;
+  --secondary: #0f172a;
+  --secondary-foreground: #f8fafc;
+  --accent: #38bdf8;
+  --accent-foreground: #0f172a;
+  --destructive: #dc2626;
+  --destructive-foreground: #fef2f2;
+  --ghost: transparent;
+  --ghost-foreground: #0f172a;
+  --ghost-hover: #e2e8f0;
+
+  --radius: 0.5rem;
+  --ring: #93c5fd;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-ghost: var(--ghost);
+  --color-ghost-foreground: var(--ghost-foreground);
+  --color-ghost-hover: var(--ghost-hover);
+  --radius-default: var(--radius);
+  --color-ring: var(--ring);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #020617;
+    --foreground: #f1f5f9;
+    --muted: #94a3b8;
+    --border: #1e293b;
+    --primary: #3b82f6;
+    --primary-foreground: #f8fafc;
+    --secondary: #e2e8f0;
+    --secondary-foreground: #020617;
+    --accent: #38bdf8;
+    --accent-foreground: #020617;
+    --ghost-foreground: #f1f5f9;
+    --ghost-hover: #1e293b;
+    --ring: #1d4ed8;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius);
+  font-weight: 500;
+  transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.btn-ghost {
+  background: var(--ghost);
+  color: var(--ghost-foreground);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--ghost-hover);
+}
+
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.btn-md {
+  padding: 0.5rem 1rem;
+  font-size: 0.9375rem;
+}
+
+.btn-lg {
+  padding: 0.625rem 1.25rem;
+  font-size: 1rem;
 }
