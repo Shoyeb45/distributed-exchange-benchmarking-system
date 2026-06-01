@@ -3,5 +3,9 @@
 version = 4
 
 [[package]]
-name = "sandbox-engine"
+name = "bot-fleet"
+version = "0.1.0"
+
+[[package]]
+name = "sandbox"
 version = "0.1.0"

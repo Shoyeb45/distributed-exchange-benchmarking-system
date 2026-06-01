@@ -1,6 +1,4 @@
 [workspace]
 resolver = "2"
 
-members = [
-    "services/sandbox-engine"
-]
+members = ["services/bot-fleet", "services/sandbox"]
