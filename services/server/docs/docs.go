@@ -63,6 +63,122 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/auth/me": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns the authenticated user profile",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get current user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/auth.MeResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errormiddleware.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/refresh": {
+            "post": {
+                "description": "Exchange a valid refresh token for new tokens",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh access token",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/auth.TokenResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errormiddleware.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/submit/": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Submit"
+                ],
+                "summary": "Create Submission",
+                "parameters": [
+                    {
+                        "description": "source code and lang",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/submit.CreateSubmitRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/apiresponse.SwaggerResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/submit.SubmitResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errormiddleware.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -102,6 +218,58 @@ const docTemplate = `{
                 }
             }
         },
+        "apiresponse.SwaggerResponse": {
+            "description": "Standard success response.",
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string",
+                    "example": "operation successful"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "auth.MeResponse": {
+            "type": "object",
+            "properties": {
+                "avatarUrl": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "githubUsername": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "auth.TokenResponse": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
         "errormiddleware.ErrorResponse": {
             "description": "Standard error response.",
             "type": "object",
@@ -122,6 +290,40 @@ const docTemplate = `{
                     "type": "boolean"
                 }
             }
+        },
+        "sqlcv1.SupportedLanguage": {
+            "type": "string",
+            "enum": [
+                "CPP",
+                "RUST"
+            ],
+            "x-enum-varnames": [
+                "SupportedLanguageCPP",
+                "SupportedLanguageRUST"
+            ]
+        },
+        "submit.CreateSubmitRequest": {
+            "type": "object",
+            "required": [
+                "language",
+                "sourceCode"
+            ],
+            "properties": {
+                "language": {
+                    "$ref": "#/definitions/sqlcv1.SupportedLanguage"
+                },
+                "sourceCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "submit.SubmitResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
         }
     },
     "securityDefinitions": {
@@ -137,7 +339,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "2.0",
 	Host:             "localhost:8000",
-	BasePath:         "/",
+	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "Server",
 	Description:      "API documentation",

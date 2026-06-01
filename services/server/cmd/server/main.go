@@ -16,7 +16,7 @@ import (
 // @version        	2.0
 // @description     API documentation
 // @host            localhost:8000
-// @BasePath        /
+// @BasePath        /api
 
 // @securityDefinitions.apikey BearerAuth
 // @in header

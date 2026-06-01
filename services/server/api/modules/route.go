@@ -5,6 +5,7 @@ import (
 
 	errormiddleware "github.com/Shoyeb45/server/api/middleware/error-middleware"
 	"github.com/Shoyeb45/server/api/modules/auth"
+	"github.com/Shoyeb45/server/api/modules/submit"
 	"github.com/Shoyeb45/server/pkg/apierr"
 	"github.com/Shoyeb45/server/pkg/database"
 	sqlcv1 "github.com/Shoyeb45/server/pkg/repository/gen-queries"
@@ -29,5 +30,6 @@ func MountRoutes(r chi.Router) {
 
 	r.Route("/api/", func(r chi.Router) {
 		auth.Mount(query, r)
+		submit.Mount(query, r)
 	})
 }

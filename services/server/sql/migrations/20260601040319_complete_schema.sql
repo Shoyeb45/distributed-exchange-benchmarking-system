@@ -5,12 +5,9 @@
 CREATE TYPE submission_status AS ENUM (
     'UPLOADING',        -- uploading artifcats to the object storage
     'UPLOADED',         -- upload success
-    'DEPLOYING',        -- deploying in container
-    'DEPLOY_FAILED',    -- if there is some error while deploying the container
     'BUILDING',         -- building binary inside the container, skipped if the user submission is binary
     'BUILD_FAILED',     -- if building failed
     'BINARY_READY',     -- binary ready for execution
-    'REJECTED',         -- binary security vulnerable
     'SUCCESS'           -- ready for benchmarking
 );
 
@@ -22,21 +19,12 @@ CREATE TYPE supported_language AS ENUM (
 CREATE TABLE submissions (
     id                  SERIAL      PRIMARY KEY,
     user_id             INT         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
- 
-    -- Storage
-    storage_key         TEXT        NOT NULL UNIQUE,
-    file_size_bytes     BIGINT      NOT NULL,
-    checksum_sha256     TEXT        NOT NULL,
-    original_filename   TEXT       NOT NULL,
- 
 
     language            supported_language        NOT NULL,
  
     -- Lifecycle
     status              submission_status  NOT NULL DEFAULT 'UPLOADING',
-    deploy_log          TEXT,
     build_log           TEXT,       -- compiler output, populated on build_failed
-    error_message       TEXT,
 
     submitted_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -96,3 +84,5 @@ CREATE INDEX idx_scores_composite_score ON scores(composite_score DESC);
 -- +goose Down
 DROP TABLE IF EXISTS scores;
 DROP TABLE IF EXISTS submissions;
+DROP TYPE submission_status;
+DROP TYPE supported_language;

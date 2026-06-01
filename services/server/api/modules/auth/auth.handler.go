@@ -133,6 +133,7 @@ func (h *AuthHandler) RefreshTokens(w http.ResponseWriter, r *http.Request) erro
 // @Description Returns the authenticated user profile
 // @Tags Auth
 // @Produce json
+// @Security BearerAuth
 // @Success 200 {object} MeResponse
 // @Failure 401 {object} errormiddleware.ErrorResponse
 // @Router /auth/me [get].

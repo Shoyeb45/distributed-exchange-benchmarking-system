@@ -5,8 +5,99 @@
 package sqlcv1
 
 import (
+	"database/sql/driver"
+	"fmt"
+
 	"github.com/jackc/pgx/v5/pgtype"
 )
+
+type SubmissionStatus string
+
+const (
+	SubmissionStatusUPLOADING   SubmissionStatus = "UPLOADING"
+	SubmissionStatusUPLOADED    SubmissionStatus = "UPLOADED"
+	SubmissionStatusBUILDING    SubmissionStatus = "BUILDING"
+	SubmissionStatusBUILDFAILED SubmissionStatus = "BUILD_FAILED"
+	SubmissionStatusBINARYREADY SubmissionStatus = "BINARY_READY"
+	SubmissionStatusSUCCESS     SubmissionStatus = "SUCCESS"
+)
+
+func (e *SubmissionStatus) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = SubmissionStatus(s)
+	case string:
+		*e = SubmissionStatus(s)
+	default:
+		return fmt.Errorf("unsupported scan type for SubmissionStatus: %T", src)
+	}
+	return nil
+}
+
+type NullSubmissionStatus struct {
+	SubmissionStatus SubmissionStatus `json:"submission_status"`
+	Valid            bool             `json:"valid"` // Valid is true if SubmissionStatus is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullSubmissionStatus) Scan(value interface{}) error {
+	if value == nil {
+		ns.SubmissionStatus, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.SubmissionStatus.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullSubmissionStatus) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.SubmissionStatus), nil
+}
+
+type SupportedLanguage string
+
+const (
+	SupportedLanguageCPP  SupportedLanguage = "CPP"
+	SupportedLanguageRUST SupportedLanguage = "RUST"
+)
+
+func (e *SupportedLanguage) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = SupportedLanguage(s)
+	case string:
+		*e = SupportedLanguage(s)
+	default:
+		return fmt.Errorf("unsupported scan type for SupportedLanguage: %T", src)
+	}
+	return nil
+}
+
+type NullSupportedLanguage struct {
+	SupportedLanguage SupportedLanguage `json:"supported_language"`
+	Valid             bool              `json:"valid"` // Valid is true if SupportedLanguage is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullSupportedLanguage) Scan(value interface{}) error {
+	if value == nil {
+		ns.SupportedLanguage, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.SupportedLanguage.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullSupportedLanguage) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.SupportedLanguage), nil
+}
 
 type RefreshToken struct {
 	ID        int32              `json:"id"`
@@ -14,6 +105,38 @@ type RefreshToken struct {
 	TokenHash string             `json:"token_hash"`
 	CreatedAt pgtype.Timestamptz `json:"created_at"`
 	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
+}
+
+type Score struct {
+	ID               int32              `json:"id"`
+	SubmissionID     int32              `json:"submission_id"`
+	UserID           int32              `json:"user_id"`
+	P50LatencyUs     int64              `json:"p50_latency_us"`
+	P90LatencyUs     int64              `json:"p90_latency_us"`
+	P99LatencyUs     int64              `json:"p99_latency_us"`
+	PeakTps          int32              `json:"peak_tps"`
+	SustainedTps     int32              `json:"sustained_tps"`
+	TotalOrdersSent  int64              `json:"total_orders_sent"`
+	TotalOrdersAcked int64              `json:"total_orders_acked"`
+	TimeoutCount     int64              `json:"timeout_count"`
+	TotalFills       int64              `json:"total_fills"`
+	CorrectFills     int64              `json:"correct_fills"`
+	ViolationCount   int32              `json:"violation_count"`
+	CorrectnessRate  pgtype.Numeric     `json:"correctness_rate"`
+	CompositeScore   pgtype.Numeric     `json:"composite_score"`
+	ScoredAt         pgtype.Timestamptz `json:"scored_at"`
+}
+
+type Submission struct {
+	ID          int32              `json:"id"`
+	UserID      int32              `json:"user_id"`
+	Language    SupportedLanguage  `json:"language"`
+	Status      SubmissionStatus   `json:"status"`
+	BuildLog    pgtype.Text        `json:"build_log"`
+	SubmittedAt pgtype.Timestamptz `json:"submitted_at"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt   pgtype.Timestamptz `json:"updated_at"`
+	SourceCode  pgtype.Text        `json:"source_code"`
 }
 
 type User struct {

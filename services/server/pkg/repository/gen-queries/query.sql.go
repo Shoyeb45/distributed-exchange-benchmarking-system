@@ -7,6 +7,8 @@ package sqlcv1
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createRefreshToken = `-- name: CreateRefreshToken :one
@@ -29,6 +31,45 @@ func (q *Queries) CreateRefreshToken(ctx context.Context, arg CreateRefreshToken
 		&i.TokenHash,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+	)
+	return &i, err
+}
+
+const createSubmission = `-- name: CreateSubmission :one
+INSERT INTO submissions (
+    user_id,
+    language,
+    source_code,
+    status
+)
+VALUES (
+    $1,
+    $2,
+    $3,
+    'UPLOADED'
+)
+RETURNING id, user_id, language, status, build_log, submitted_at, created_at, updated_at, source_code
+`
+
+type CreateSubmissionParams struct {
+	UserID     int32             `json:"user_id"`
+	Language   SupportedLanguage `json:"language"`
+	SourceCode pgtype.Text       `json:"source_code"`
+}
+
+func (q *Queries) CreateSubmission(ctx context.Context, arg CreateSubmissionParams) (*Submission, error) {
+	row := q.db.QueryRow(ctx, createSubmission, arg.UserID, arg.Language, arg.SourceCode)
+	var i Submission
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Language,
+		&i.Status,
+		&i.BuildLog,
+		&i.SubmittedAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.SourceCode,
 	)
 	return &i, err
 }

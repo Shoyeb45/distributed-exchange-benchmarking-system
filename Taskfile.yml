@@ -14,6 +14,10 @@ includes:
     taskfile: ./services/sandbox/Taskfile.yml
     dir: ./services/sandbox
 
+  bot-fleet:
+    taskfile: ./services/bot-fleet/Taskfile.yml
+    dir: ./services/bot-fleet
+
 
 # these are the main commands which is defined in their respective taskfiles
 tasks:
@@ -44,7 +48,8 @@ tasks:
     deps:
       - web:lint
       - server:lint
-      - cargo fmt --all
+      - sandbox:lint
+      - bot-fleet:lint
 
   start:
     desc: Start services as it would in the production

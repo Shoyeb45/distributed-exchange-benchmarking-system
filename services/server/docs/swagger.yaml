@@ -1,4 +1,4 @@
-basePath: /
+basePath: /api
 definitions:
   apierr.ErrorCode:
     enum:
@@ -29,6 +29,41 @@ definitions:
       message:
         type: string
     type: object
+  apiresponse.SwaggerResponse:
+    description: Standard success response.
+    properties:
+      data: {}
+      message:
+        example: operation successful
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+  auth.MeResponse:
+    properties:
+      avatarUrl:
+        type: string
+      email:
+        type: string
+      githubUsername:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      success:
+        type: boolean
+    type: object
+  auth.TokenResponse:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+      success:
+        type: boolean
+    type: object
   errormiddleware.ErrorResponse:
     description: Standard error response.
     properties:
@@ -42,6 +77,29 @@ definitions:
         type: string
       success:
         type: boolean
+    type: object
+  sqlcv1.SupportedLanguage:
+    enum:
+    - CPP
+    - RUST
+    type: string
+    x-enum-varnames:
+    - SupportedLanguageCPP
+    - SupportedLanguageRUST
+  submit.CreateSubmitRequest:
+    properties:
+      language:
+        $ref: '#/definitions/sqlcv1.SupportedLanguage'
+      sourceCode:
+        type: string
+    required:
+    - language
+    - sourceCode
+    type: object
+  submit.SubmitResponse:
+    properties:
+      id:
+        type: integer
     type: object
 host: localhost:8000
 info:
@@ -82,6 +140,76 @@ paths:
       summary: Verify github code
       tags:
       - Auth
+  /auth/me:
+    get:
+      description: Returns the authenticated user profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.MeResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errormiddleware.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get current user
+      tags:
+      - Auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Exchange a valid refresh token for new tokens
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.TokenResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errormiddleware.ErrorResponse'
+      summary: Refresh access token
+      tags:
+      - Auth
+  /submit/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: source code and lang
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/submit.CreateSubmitRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/apiresponse.SwaggerResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/submit.SubmitResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errormiddleware.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create Submission
+      tags:
+      - Submit
 securityDefinitions:
   BearerAuth:
     in: header
