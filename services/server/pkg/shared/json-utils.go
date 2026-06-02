@@ -2,11 +2,10 @@ package shared
 
 import "encoding/json"
 
-
 func ToString[T any](data T) (string, error) {
 	jsonBytes, err := json.Marshal(data)
 	if err != nil {
-		return "", err;
+		return "", err
 	}
 
 	jsonString := string(jsonBytes)

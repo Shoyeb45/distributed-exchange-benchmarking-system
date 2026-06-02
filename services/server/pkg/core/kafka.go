@@ -31,7 +31,7 @@ func KafkaInit() error {
 
 func Produce[T any](userID int32, data T) error {
 	message, err := shared.ToString(data)
-	
+
 	if err != nil {
 		return err
 	}

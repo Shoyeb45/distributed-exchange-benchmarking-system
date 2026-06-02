@@ -29,7 +29,7 @@ func NewSubmitHandler(repo *SubmitRepository) *SubmitHandler {
 // @Param        body  body      CreateSubmitRequest   true  "source code and lang"
 // @Success      200   {object}  apiresponse.SwaggerResponse{data=SubmitResponse}
 // @Failure      500   {object}  errormiddleware.ErrorResponse
-// @Router       /submit/ [post]
+// @Router       /submit/ [post].
 func (h *SubmitHandler) CreateSubmission(res http.ResponseWriter, req *http.Request) error {
 	ctx := req.Context()
 	body := validatormiddleware.From[CreateSubmitRequest](req)
@@ -48,11 +48,11 @@ func (h *SubmitHandler) CreateSubmission(res http.ResponseWriter, req *http.Requ
 	}
 
 	kafkaservice.Produce(userID, KafkaMessage{
-		UserID: userID,
+		UserID:       userID,
 		SubmissionID: createdSubmission.ID,
-		CreatedTime: time.Now().Unix(),
-	});
-	
+		CreatedTime:  time.Now().Unix(),
+	})
+
 	return apiresponse.ResponseWriter(res, http.StatusCreated, "submission created", SubmitResponse{
 		ID: createdSubmission.ID,
 	})

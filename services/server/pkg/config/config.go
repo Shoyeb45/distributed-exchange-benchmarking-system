@@ -64,7 +64,7 @@ func LoadEnvironmentVariables() error {
 		LogDirectory:            getEnv("LOG_DIRECTORY", "logs"),
 		TimeoutSeconds:          getEnv("TIMEOUT_SECONDS", "12"),
 		KafkaAddress:            getEnv("KAFKA_ADDRESS", "localhost:9092"),
-		KafkaTopic: 			 getEnv("KAFKA_TOPIC", "submission-created"),		
+		KafkaTopic:              getEnv("KAFKA_TOPIC", "submission-created"),
 	}
 
 	return validateEnvironmentVariables()

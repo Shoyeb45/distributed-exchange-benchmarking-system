@@ -41,8 +41,8 @@ func main() {
 	}
 	defer database.Close()
 
-	err := kafkaservice.KafkaInit();
-	
+	err := kafkaservice.KafkaInit()
+
 	if err != nil {
 		panic(err.Error())
 	}

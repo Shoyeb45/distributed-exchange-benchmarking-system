@@ -1,7 +1,6 @@
 package submit
 
 import (
-
 	sqlcv1 "github.com/Shoyeb45/server/pkg/repository/gen-queries"
 )
 
@@ -15,7 +14,7 @@ type SubmitResponse struct {
 }
 
 type KafkaMessage struct {
-	UserID       int32 `json:"userId"`
-	SubmissionID int32 `json:"submissionId"`
-	CreatedTime  int64 `json:"createdTime"`
+	UserID       int32 `json:"user_id"`
+	SubmissionID int32 `json:"submission_id"`
+	CreatedTime  int64 `json:"created_time"`
 }
