@@ -27,6 +27,9 @@ type Config struct {
 	// Directory where logging should happen
 	LogDirectory   string
 	TimeoutSeconds string
+	// kafka cred
+	KafkaAddress string
+	KafkaTopic   string
 }
 
 var Cfg *Config
@@ -60,6 +63,8 @@ func LoadEnvironmentVariables() error {
 		Stage:                   getEnv("STAGE", "dev"),
 		LogDirectory:            getEnv("LOG_DIRECTORY", "logs"),
 		TimeoutSeconds:          getEnv("TIMEOUT_SECONDS", "12"),
+		KafkaAddress:            getEnv("KAFKA_ADDRESS", "localhost:9092"),
+		KafkaTopic: 			 getEnv("KAFKA_TOPIC", "submission-created"),		
 	}
 
 	return validateEnvironmentVariables()
@@ -99,6 +104,14 @@ func validateEnvironmentVariables() error {
 
 	if Cfg.JwtSecret == "" {
 		return errors.New("JWT_SECRET must be provided")
+	}
+
+	if Cfg.KafkaAddress == "" {
+		return errors.New("KAFKA_ADDRESS must be provided")
+	}
+
+	if Cfg.KafkaTopic == "" {
+		return errors.New("KAFKA_TOPIC must be provided")
 	}
 
 	_, er := strconv.Atoi(Cfg.TimeoutSeconds)

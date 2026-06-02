@@ -3,11 +3,13 @@ package submit
 import (
 	"encoding/base64"
 	"net/http"
+	"time"
 
 	authmiddleware "github.com/Shoyeb45/server/api/middleware/auth"
 	validatormiddleware "github.com/Shoyeb45/server/api/middleware/validator"
 	"github.com/Shoyeb45/server/pkg/apierr"
 	"github.com/Shoyeb45/server/pkg/apiresponse"
+	kafkaservice "github.com/Shoyeb45/server/pkg/core"
 )
 
 type SubmitHandler struct {
@@ -45,6 +47,12 @@ func (h *SubmitHandler) CreateSubmission(res http.ResponseWriter, req *http.Requ
 		return err
 	}
 
+	kafkaservice.Produce(userID, KafkaMessage{
+		UserID: userID,
+		SubmissionID: createdSubmission.ID,
+		CreatedTime: time.Now().Unix(),
+	});
+	
 	return apiresponse.ResponseWriter(res, http.StatusCreated, "submission created", SubmitResponse{
 		ID: createdSubmission.ID,
 	})

@@ -8,6 +8,7 @@ import (
 	_ "github.com/Shoyeb45/server/docs"
 	"github.com/Shoyeb45/server/internal/app"
 	"github.com/Shoyeb45/server/pkg/config"
+	kafkaservice "github.com/Shoyeb45/server/pkg/core"
 	"github.com/Shoyeb45/server/pkg/database"
 	"github.com/Shoyeb45/server/pkg/logger"
 )
@@ -39,6 +40,12 @@ func main() {
 		panic(err.Error())
 	}
 	defer database.Close()
+
+	err := kafkaservice.KafkaInit();
+	
+	if err != nil {
+		panic(err.Error())
+	}
 
 	chiMux := app.New()
 
