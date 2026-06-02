@@ -32,7 +32,7 @@ tasks:
       cmds:
         - goose -dir ./sql/migrations create {{.NAME}} sql
       
-  migrate-db:
+  db-apply:
       desc: make changes in the database with latest migration
       cmds:
         - goose -dir ./sql/migrations postgres "{{.DB_URL}}" up

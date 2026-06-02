@@ -68,7 +68,6 @@ func (r *AuthRepository) RevokeRefreshToken(ctx context.Context, rawToken string
 	return r.q.DeleteRefreshTokenByHash(ctx, shared.HashToken(rawToken))
 }
 
-
 func (r *AuthRepository) FindOrCreateUser(ctx context.Context, githubUser shared.GithubUser) (*queries.User, error) {
 	user, err := r.GetUserByGithubId(ctx, int32(githubUser.ID))
 	if err == nil {

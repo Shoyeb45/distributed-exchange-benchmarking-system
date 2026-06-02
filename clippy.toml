@@ -1,0 +1,2 @@
+# Clippy config — enforces idiomatic Rust
+msrv = "1.75.0"

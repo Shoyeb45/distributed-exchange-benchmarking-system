@@ -83,4 +83,3 @@ func ParseToken(raw string) (int32, error) {
 
 	return int32(userID), nil
 }
-
