@@ -1,4 +1,7 @@
 [workspace]
 resolver = "2"
 
-members = ["services/bot-fleet", "services/sandbox"]
+members = ["libs/config", "libs/database", "libs/kafka-service","services/bot-fleet", "services/sandbox"]
+
+[workspace.dependencies]
+config = { path = "libs/config" }

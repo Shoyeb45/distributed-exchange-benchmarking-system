@@ -57,3 +57,8 @@ tasks:
       - web:start
       - server:start
       - sandbox:start
+
+  lib:
+    desc: Create rust library,
+    cmds: 
+      - cargo new libs/{{.NAME}} --lib 
