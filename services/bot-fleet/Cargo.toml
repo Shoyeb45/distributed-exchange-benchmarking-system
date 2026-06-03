@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 config.workspace = true
+shared-type.workspace = true
+protocol.workspace = true
 tokio = { version = "1", features = ["full"] }
 kafka-service = { path = "../../libs/kafka-service" }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"

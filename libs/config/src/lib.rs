@@ -1,6 +1,6 @@
 use dotenvy::dotenv;
-use std::env;
 use once_cell::sync::Lazy;
+use std::env;
 
 #[derive(Debug, Clone)]
 pub struct Config {
@@ -52,6 +52,5 @@ impl Config {
         }
     }
 }
-
 
 pub static CONFIG: Lazy<Config> = Lazy::new(Config::load);
