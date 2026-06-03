@@ -1,7 +1,9 @@
 [workspace]
 resolver = "2"
 
-members = ["libs/config", "libs/database", "libs/kafka-service","services/bot-fleet", "services/sandbox"]
+members = ["libs/config", "libs/database", "libs/kafka-service", "libs/protocol", "libs/shared-type","services/bot-fleet", "services/sandbox"]
 
 [workspace.dependencies]
 config = { path = "libs/config" }
+shared-type = { path = "libs/shared-type" }
+protocol = { path = "libs/protocol"}

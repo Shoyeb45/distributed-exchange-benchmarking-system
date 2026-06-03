@@ -28,6 +28,7 @@ tasks:
       - web:build
       - server:build
       - sandbox:build
+      - bot-fleet:build
 
   dev:
     desc: Start services as a development
@@ -35,13 +36,15 @@ tasks:
       - web:dev
       - server:dev
       - sandbox:dev
-      
+      - bot-fleet:dev
+
   test:
     desc: Test services
     deps:
       - web:test
       - server:test
       - sandbox:test
+      - bot-fleet:test
     
   lint:
     desc: Format and lint services
