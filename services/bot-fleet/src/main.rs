@@ -1,6 +1,6 @@
 mod listener;
 mod worker;
-mod validator;
+pub mod validator;
 
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -13,7 +13,7 @@ async fn main() {
     let mut server = Server::new();
     let sessions: ActiveSessions = Arc::new(Mutex::new(HashMap::new()));
 
-    let sessions_connect = sessions.clone();
+    let _sessions_connect = sessions.clone();
     server.on_connect(move |id| {
         println!("[server] client connected, id = {id}");
     });

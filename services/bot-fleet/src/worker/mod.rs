@@ -1,7 +1,9 @@
 use std::sync::Arc;
 use tokio::sync::Mutex;
+use crate::validator::Validator;
+use crate::validator::types::{Command, Side};
+use crate::validator::wire_protocol;
 use ::protocol::server::ServerHandle;
-use crate::validator::{Validator, Command, wire_protocol, Side};
 
 pub struct Session {
     pub validator: Validator,
