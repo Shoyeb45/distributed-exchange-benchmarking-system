@@ -12,7 +12,7 @@ async fn main() {
         println!("[client] ❌ disconnected from server");
     });
 
-    let handle = client
+    let _handle = client
         .connect("ws://127.0.0.1:5052")
         .await
         .expect("could not connect — is the server running?");
