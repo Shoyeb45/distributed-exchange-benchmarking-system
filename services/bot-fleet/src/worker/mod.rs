@@ -50,8 +50,6 @@ impl Session {
     }
 }
 
-pub type ActiveSessions = Arc<Mutex<std::collections::HashMap<String, Session>>>;
-
 pub async fn run_benchmark(session: Arc<Mutex<Session>>) {
     // Phase 3: Start Benchmark
     {

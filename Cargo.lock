@@ -160,6 +160,8 @@ dependencies = [
  "config",
  "kafka-service",
  "protocol",
+ "serde",
+ "serde_json",
  "shared-type",
  "tokio",
 ]
